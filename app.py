@@ -54,6 +54,13 @@ def load_stock_data():
             })
     return pd.DataFrame(results)
 
+def color_pos_neg(val):
+    if val > 0:
+        return 'color: red; font-weight: bold;'
+    elif val < 0:
+        return 'color: blue; font-weight: bold;'
+    return ''
+
 with st.spinner("KRX 마켓으로부터 실시간 주가 데이터를 불러오는 중입니다..."):
     df_raw = load_stock_data()
 
@@ -75,11 +82,7 @@ with tab1:
     df1 = df1.sort_values(by="투자_수익률(%)", ascending=False).reset_index(drop=True)
     df1.index += 1
     
-    max_abs1 = df1["투자_수익률(%)"].abs().max() or 1.0
-    styled_df1 = df1.style.text_gradient(
-        subset=["투자_수익률(%)"], cmap="seismic", vmin=-max_abs1, vmax=max_abs1
-    ).format(format_dict)
-    
+    styled_df1 = df1.style.map(color_pos_neg, subset=["투자_수익률(%)"]).format(format_dict)
     st.dataframe(styled_df1, use_container_width=True)
 
 with tab2:
@@ -89,10 +92,13 @@ with tab2:
     df2 = df_raw[["그룹", "수익률격차(%p)", "투자기업", "투자_수익률(%)", "미투자기업", "미투자_수익률(%)"]].copy()
     df2 = df2.sort_values(by="수익률격차(%p)", ascending=False).reset_index(drop=True)
     df2.index += 1
-    
-    max_abs2 = df2["수익률격차(%p)"].abs().max() or 1.0
-    styled_df2 = df2.style.text_gradient(
-        subset=["수익률격차(%p)"], cmap="seismic", vmin=-max_abs2, vmax=max_abs2
-    ).format(format_dict)
-    
+
+    styled_df2 = df2.style.map(color_pos_neg, subset=["수익률격차(%p)"]).format(format_dict)
     st.dataframe(styled_df2, use_container_width=True)
+    
+    # max_abs2 = df2["수익률격차(%p)"].abs().max() or 1.0
+    # styled_df2 = df2.style.text_gradient(
+    #     subset=["수익률격차(%p)"], cmap="seismic", vmin=-max_abs2, vmax=max_abs2
+    # ).format(format_dict)
+    
+    # st.dataframe(styled_df2, use_container_width=True)
