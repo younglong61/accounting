@@ -3,10 +3,13 @@ import yfinance as yf
 import pandas as pd
 from datetime import datetime
 
+START_DATE = "2025-12-17"
+END_DATE = datetime.today().strftime('%Y-%m-%d') # 현재 날짜까지 실시간 수집
+
 # 웹 페이지 제목 및 레이아웃 설정
 st.set_page_config(page_title="그룹 프로젝트 투자 수익률 리더보드", layout="wide")
 st.title("📊 2025 그룹 프로젝트 투자 성과 리더보드")
-st.markdown("2025년 12월 17일부터", END_DATE, "까지의 실제 투자 수익률")
+st.markdown(f"2025년 12월 17일부터 {END_DATE}까지의 실제 투자 수익률")
 
 # 9개 그룹별 투자/미투자 기업 데이터 매핑
 group_data = {
@@ -20,9 +23,6 @@ group_data = {
     "8조": {"inv_name": "삼성전기", "inv_code": "009150.KS", "non_name": "LG이노텍", "non_code": "011070.KS"},
     "9조": {"inv_name": "DB하이텍", "inv_code": "000990.KS", "non_name": "LX세미콘", "non_code": "108320.KS"}
 }
-
-START_DATE = "2025-12-17"
-END_DATE = datetime.today().strftime('%Y-%m-%d') # 현재 날짜까지 실시간 수집
 
 @st.cache_data(ttl=3600) # 1시간 동안 데이터를 캐싱하여 속도 최적화
 def load_stock_data():
