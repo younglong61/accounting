@@ -8,7 +8,7 @@ END_DATE = datetime.today().strftime('%Y-%m-%d') # 현재 날짜까지 실시간
 
 # 웹 페이지 제목 및 레이아웃 설정
 st.set_page_config(page_title="그룹 프로젝트 투자 수익률 리더보드", layout="wide")
-st.title("📊 2025 그룹 프로젝트 투자 성과 리더보드")
+st.title("2025 스마트시티와 회계학 그룹 프로젝트 투자 성과 리더보드")
 st.markdown(f"{START_DATE}부터 {END_DATE}까지의 실제 투자 수익률")
 
 # 9개 그룹별 투자/미투자 기업 데이터 매핑
