@@ -76,7 +76,7 @@ with tab1:
     df1.index += 1
     
     max_abs1 = df1["투자_수익률(%)"].abs().max() or 1.0
-    styled_df1 = df1.style.background_gradient(
+    styled_df1 = df1.style.text_gradient(
         subset=["투자_수익률(%)"], cmap="seismic", vmin=-max_abs1, vmax=max_abs1
     ).format(format_dict)
     
@@ -91,7 +91,7 @@ with tab2:
     df2.index += 1
     
     max_abs2 = df2["수익률격차(%p)"].abs().max() or 1.0
-    styled_df2 = df2.style.background_gradient(
+    styled_df2 = df2.style.text_gradient(
         subset=["수익률격차(%p)"], cmap="seismic", vmin=-max_abs2, vmax=max_abs2
     ).format(format_dict)
     
