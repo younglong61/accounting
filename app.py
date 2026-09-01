@@ -25,13 +25,13 @@ group_data = {
     "9조": {"inv_name": "DB하이텍", "inv_code": "000990.KS", "non_name": "LX세미콘", "non_code": "108320.KS"}
 }
 
-@st.cache_data(ttl=3600) # 1시간 동안 데이터를 캐싱하여 속도 최적화
-def load_stock_data():
-    results = []
+@st.cache_data(ttl=3600)  # 1시간 동안 데이터를 캐싱하여 속도 최적화
+def load_all_data():
+    summary_results = []
+    df_timeline = pd.DataFrame()
+    
     for group, info in group_data.items():
-        # 투자 기업 데이터 수집
         inv_hist = yf.Ticker(info["inv_code"]).history(start=START_DATE, end=END_DATE)
-        # 미투자 기업 데이터 수집
         non_hist = yf.Ticker(info["non_code"]).history(start=START_DATE, end=END_DATE)
         
         if not inv_hist.empty and not non_hist.empty:
@@ -41,7 +41,7 @@ def load_stock_data():
             inv_return = ((inv_end - inv_start) / inv_start) * 100
             non_return = ((non_end - non_start) / non_start) * 100
             
-            results.append({
+            summary_results.append({
                 "그룹": group,
                 "투자기업": info["inv_name"],
                 "투자_최초주가": round(inv_start),
@@ -53,7 +53,19 @@ def load_stock_data():
                 "미투자_수익률(%)": round(non_return, 2),
                 "수익률격차(%p)": round(inv_return - non_return, 2)
             })
-    return pd.DataFrame(results)
+            
+            # 시계열 수익률 계산
+            col_name = f"{group} ({info['inv_name']})"
+            inv_hist[col_name] = ((inv_hist['Close'] - inv_start) / inv_start) * 100
+            if df_timeline.empty:
+                df_timeline = inv_hist[[col_name]]
+            else:
+                df_timeline = df_timeline.join(inv_hist[[col_name]], how='outer')
+                
+    return pd.DataFrame(summary_results), df_timeline.ffill().dropna()
+
+with st.spinner("KRX 마켓으로부터 데이터를 불러오는 중입니다..."):
+    df_raw, df_timeline = load_all_data()
 
 def color_pos_neg(val):
     if val > 0:
