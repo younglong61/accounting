@@ -82,7 +82,7 @@ format_dict = {
 }
 
 # 탭 구조로 리더보드 분리
-tab1, tab2, tab3 = st.tabs(["🏆 실제 투자 종목 수익률 순위", "⚖️ 그룹별 투자 선택 격차 리더보드", "📈 시계열 수익률 추이 (리더보드 3)"])
+tab1, tab2, tab3 = st.tabs(["🏆 실제 투자 종목 수익률 순위", "⚖️ 그룹별 투자 선택 격차 리더보드", "📈 시계열 수익률 추이"])
 
 with tab1:
     st.subheader("1. 실제 투자 종목 수익률 리더보드")
@@ -112,14 +112,14 @@ with tab3:
     
     fig = go.Figure()
     for col in df_timeline.columns:
+        custom_labels = df_timeline[col].map(lambda v: f"{v:+.2f}%")
         fig.add_trace(go.Scatter(
             x=df_timeline.index,
             y=df_timeline[col],
+            customdata=custom_labels,
             mode='lines',
             name=col,
-            hovertemplate=f"{col}<br>" + "%{y:+.2f}%<extra></extra>"
-            # hovertemplate="<b>%{x|%Y-%m-%d}</b><br>" + f"종목: {col}<br>" + "수익률: <b>%{y:+.2f}%</b><extra></extra>"
-            # hovertemplate="<b>%{x|%Y-%m-%d}</b><br>%{y:+.2f}%<extra></extra>"
+            hovertemplate=f"{col}<br>" + "%{customdata}<extra></extra>"
         ))
     
     fig.add_hline(y=0, line_dash="dash", line_color="gray", annotation_text="원금(0%)")
