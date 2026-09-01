@@ -51,7 +51,7 @@ def load_all_data():
                 "미투자_최초주가": round(non_start),
                 "미투자_현재주가": round(non_end),
                 "미투자_수익률(%)": round(non_return, 2),
-                "수익률격차(%p)": round(inv_return - non_return, 2)
+                "수익률투자-미투자(%p)": round(inv_return - non_return, 2)
             })
             
             # 시계열 수익률 계산
@@ -78,11 +78,11 @@ def color_pos_neg(val):
 format_dict = {
     "투자_최초주가": "{:,.0f}원", "투자_현재주가": "{:,.0f}원", "투자_수익률(%)": "{:+.2f}%",
     "미투자_최초주가": "{:,.0f}원", "미투자_현재주가": "{:,.0f}원", "미투자_수익률(%)": "{:+.2f}%",
-    "수익률격차(%p)": "{:+.2f}%p"
+    "수익률투자-미투자(%p)": "{:+.2f}%p"
 }
 
 # 탭 구조로 리더보드 분리
-tab1, tab2, tab3 = st.tabs(["🏆 투자 수익률", "⚖️ 투자 선택 격차", "📈 시계열 수익률"])
+tab1, tab2, tab3 = st.tabs(["🏆 투자 수익률", "⚖️ 투자 선택 투자-미투자", "📈 시계열 수익률"])
 
 with tab1:
    
@@ -99,7 +99,7 @@ with tab2:
     df2 = df2.sort_values(by="투자-미투자(%p)", ascending=False).reset_index(drop=True)
     df2.index += 1
 
-    styled_df2 = df2.style.map(color_pos_neg, subset=["수익률격차(%p)"]).format(format_dict)
+    styled_df2 = df2.style.map(color_pos_neg, subset=["수익률투자-미투자(%p)"]).format(format_dict)
     st.dataframe(styled_df2, use_container_width=True)
 
 with tab3:
