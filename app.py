@@ -74,9 +74,6 @@ def color_pos_neg(val):
         return 'color: blue; font-weight: bold;'
     return ''
 
-with st.spinner("KRX 마켓으로부터 실시간 주가 데이터를 불러오는 중입니다..."):
-    df_raw = load_stock_data()
-
 # 데이터 포맷 규칙 정의
 format_dict = {
     "투자_최초주가": "{:,.0f}원", "투자_현재주가": "{:,.0f}원", "투자_수익률(%)": "{:+.2f}%",
