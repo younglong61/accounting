@@ -2,6 +2,7 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 from datetime import datetime
+import plotly.graph_objects as go
 
 START_DATE = "2025-12-17"
 END_DATE = datetime.today().strftime('%Y-%m-%d') # 현재 날짜까지 실시간 수집
@@ -72,7 +73,7 @@ format_dict = {
 }
 
 # 탭 구조로 리더보드 분리
-tab1, tab2 = st.tabs(["🏆 실제 투자 종목 수익률 순위", "⚖️ 그룹별 투자 선택 격차 리더보드"])
+tab1, tab2 = st.tabs(["🏆 실제 투자 종목 수익률 순위", "⚖️ 그룹별 투자 선택 격차 리더보드", "📈 시계열 수익률 추이 (리더보드 3)"])
 
 with tab1:
     st.subheader("1. 실제 투자 종목 수익률 리더보드")
@@ -95,6 +96,32 @@ with tab2:
 
     styled_df2 = df2.style.map(color_pos_neg, subset=["수익률격차(%p)"]).format(format_dict)
     st.dataframe(styled_df2, use_container_width=True)
+
+with tab3:
+    st.subheader("3. 투자 종목 기간별 수익률 변화 추이")
+    st.caption("💡 그래프 위의 특정 날짜 지점을 클릭하거나 터치(호버)하면 상세 수익률을 볼 수 있습니다. 하단 범례의 기업명을 클릭하면 특정 기업만 골라 볼 수 있습니다.")
+    
+    fig = go.Figure()
+    for col in df_timeline.columns:
+        fig.add_trace(go.Scatter(
+            x=df_timeline.index,
+            y=df_timeline[col],
+            mode='lines',
+            name=col,
+            hovertemplate="<b>%{x|%Y-%m-%d}</b><br>" + f"종목: {col}<br>" + "수익률: <b>%{y:+.2f}%</b><extra></extra>"
+        ))
+    
+    fig.add_hline(y=0, line_dash="dash", line_color="gray", annotation_text="원금(0%)")
+    fig.update_layout(
+        xaxis_title="날짜",
+        yaxis_title="수익률 (%)",
+        yaxis_tickformat="+.1f%",
+        hovermode="x unified",
+        template="plotly_white",
+        legend=dict(orientation="h", yanchor="bottom", y=-0.4, xanchor="center", x=0.5),
+        height=600
+    )
+    st.plotly_chart(fig, use_container_width=True)
     
     # max_abs2 = df2["수익률격차(%p)"].abs().max() or 1.0
     # styled_df2 = df2.style.text_gradient(
