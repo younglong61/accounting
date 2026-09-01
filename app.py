@@ -122,21 +122,22 @@ with tab3:
             hovertemplate=f"{col}<br>" + "%{customdata}<extra></extra>"
         ))
     
-    fig.add_hline(y=0, line_dash="dash", line_color="gray", annotation_text="원금(0%)")
     fig.update_layout(
         xaxis_title="날짜",
         yaxis_title="수익률 (%)",
         yaxis_tickformat="+.1f%",
         hovermode="closest",
         template="plotly_white",
-        legend=dict(orientation="h", yanchor="bottom", y=-0.4, xanchor="center", x=0.5),
+        legend=dict(
+            itemclick="toggleothers",  # 클릭 시 해당 기업만 표시
+            itemdoubleclick="toggle",  # 더블클릭 시 전체 표시 복원
+            title="그룹 및 투자기업 (클릭: 단독조회 / 더블클릭: 전체보기)", 
+            orientation="h", 
+            yanchor="bottom", 
+            y=-0.35, 
+            xanchor="center", 
+            x=0.5
+        ),
         height=600
     )
     st.plotly_chart(fig, use_container_width=True)
-    
-    # max_abs2 = df2["수익률격차(%p)"].abs().max() or 1.0
-    # styled_df2 = df2.style.text_gradient(
-    #     subset=["수익률격차(%p)"], cmap="seismic", vmin=-max_abs2, vmax=max_abs2
-    # ).format(format_dict)
-    
-    # st.dataframe(styled_df2, use_container_width=True)
