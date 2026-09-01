@@ -117,7 +117,9 @@ with tab3:
             y=df_timeline[col],
             mode='lines',
             name=col,
-            hovertemplate="<b>%{x|%Y-%m-%d}</b><br>" + f"종목: {col}<br>" + "수익률: <b>%{y:+.2f}%</b><extra></extra>"
+            hovertemplate=f"{col}<br>" + "%{y:+.2f}%<extra></extra>"
+            # hovertemplate="<b>%{x|%Y-%m-%d}</b><br>" + f"종목: {col}<br>" + "수익률: <b>%{y:+.2f}%</b><extra></extra>"
+            # hovertemplate="<b>%{x|%Y-%m-%d}</b><br>%{y:+.2f}%<extra></extra>"
         ))
     
     fig.add_hline(y=0, line_dash="dash", line_color="gray", annotation_text="원금(0%)")
@@ -125,7 +127,7 @@ with tab3:
         xaxis_title="날짜",
         yaxis_title="수익률 (%)",
         yaxis_tickformat="+.1f%",
-        hovermode="x unified",
+        hovermode="closest",
         template="plotly_white",
         legend=dict(orientation="h", yanchor="bottom", y=-0.4, xanchor="center", x=0.5),
         height=600
