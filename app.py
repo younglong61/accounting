@@ -8,9 +8,9 @@ START_DATE = "2025-12-17"
 END_DATE = datetime.today().strftime('%Y-%m-%d') # 현재 날짜까지 실시간 수집
 
 # 웹 페이지 제목 및 레이아웃 설정
-st.set_page_config(page_title="그룹 프로젝트 투자 수익률 리더보드", layout="wide")
-st.title("2025 스마트시티와 회계학 그룹 프로젝트 투자 성과 리더보드")
-st.markdown(f"{START_DATE}부터 {END_DATE}까지의 실제 투자 수익률")
+st.set_page_config(page_title="그룹 프로젝트 투자 수익률", layout="wide")
+st.title("2025 스마트시티와 회계학 그룹 프로젝트")
+st.markdown(f"{START_DATE} ~ {END_DATE} 투자 수익률")
 
 # 9개 그룹별 투자/미투자 기업 데이터 매핑
 group_data = {
@@ -82,12 +82,10 @@ format_dict = {
 }
 
 # 탭 구조로 리더보드 분리
-tab1, tab2, tab3 = st.tabs(["🏆 실제 투자 종목 수익률 순위", "⚖️ 그룹별 투자 선택 격차 리더보드", "📈 시계열 수익률 추이"])
+tab1, tab2, tab3 = st.tabs(["🏆 투자 수익률", "⚖️ 투자 선택 격차", "📈 시계열 수익률"])
 
 with tab1:
-    st.subheader("1. 실제 투자 종목 수익률 리더보드")
-    # st.caption("실제 투자 의사결정을 내린 종목의 수익률 기준 내림차순 정렬입니다.")
-    
+   
     df1 = df_raw[["그룹", "투자_수익률(%)", "투자기업", "투자_최초주가", "투자_현재주가"]].copy()
     df1 = df1.sort_values(by="투자_수익률(%)", ascending=False).reset_index(drop=True)
     df1.index += 1
@@ -96,19 +94,15 @@ with tab1:
     st.dataframe(styled_df1, use_container_width=True)
 
 with tab2:
-    st.subheader("2. 그룹별 투자 선택 격차 리더보드 (투자 - 미투자)")
-    # st.caption("+ 격차가 클수록 대안 기업 대비 가치주를 성공적으로 선택했음을 의미합니다.")
     
-    df2 = df_raw[["그룹", "수익률격차(%p)", "투자기업", "투자_수익률(%)", "미투자기업", "미투자_수익률(%)"]].copy()
-    df2 = df2.sort_values(by="수익률격차(%p)", ascending=False).reset_index(drop=True)
+    df2 = df_raw[["그룹", "투자-미투자(%p)", "투자기업", "투자_수익률(%)", "미투자기업", "미투자_수익률(%)"]].copy()
+    df2 = df2.sort_values(by="투자-미투자(%p)", ascending=False).reset_index(drop=True)
     df2.index += 1
 
     styled_df2 = df2.style.map(color_pos_neg, subset=["수익률격차(%p)"]).format(format_dict)
     st.dataframe(styled_df2, use_container_width=True)
 
 with tab3:
-    st.subheader("3. 투자 종목 기간별 수익률 변화 추이")
-    st.caption("💡 그래프 위의 특정 날짜 지점을 클릭하거나 터치(호버)하면 상세 수익률을 볼 수 있습니다. 하단 범례의 기업명을 클릭하면 특정 기업만 골라 볼 수 있습니다.")
     
     fig = go.Figure()
     for col in df_timeline.columns:
@@ -131,7 +125,6 @@ with tab3:
         legend=dict(
             itemclick="toggleothers",  # 클릭 시 해당 기업만 표시
             itemdoubleclick="toggle",  # 더블클릭 시 전체 표시 복원
-            title="그룹 및 투자기업 (클릭: 단독조회 / 더블클릭: 전체보기)", 
             orientation="h", 
             yanchor="bottom", 
             y=-0.35, 
