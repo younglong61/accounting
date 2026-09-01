@@ -113,7 +113,7 @@ with tab3:
             customdata=custom_labels,
             mode='lines',
             name=col,
-            hovertemplate=f"{col}<br>" + "%{customdata}<extra></extra>"
+            hovertemplate="{%Y-%m-%d}<br>" + "{col}<br>" + "%{customdata}<extra></extra>"
         ))
     
     fig.update_layout(
